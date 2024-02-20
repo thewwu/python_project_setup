@@ -4,9 +4,9 @@
 
 - This repository is a simple guideline of Python project setup.
 - It will introduce the most common practice in setuping a development python package.
-  1. System path (`sys.path` / `PYTHONPATH`)
-  2. `setuptools` (`setup.py`)
-  3. `pyproject.toml`
+  1. [system path (`sys.path` / `PYTHONPATH`)](#31-system-path-syspath--pythonpath)
+  2. [`setuptools` (`setup.py`)](#32-setuptools-setuppy)
+  3. [`pyproject.toml`](#33-pyprojecttoml)
 
 ## 1. Virtual Environment setup (Windows Environment)
 - Create a virtual environment (Python 3.10) for testing
@@ -109,10 +109,168 @@ from demo.utils import mean, median
 ```
 
 ## 3.2. `setuptools` (`setup.py`)
-- 
+- The most standard Python package building and packaging library
+  - [Reference](https://setuptools.pypa.io/en/latest/userguide/)
+- Functionality
+  1. **Package Management**: Define package metadata like name, version, license...
+  2. **Package Discovery**: Discover and include Python packages required in the distribution
+  3. **Dependency Management**: Specify dependencies to be installed for your package
+  4. **Entry Point**: Define scripts / plugins that could be run in users' environment
+
+- To enable this, `setuptools` should be installed and [`setup.py`](setup.py) is required.
+
+```bash
+# Install setuptools
+pip install -U setuptools
+```
+
+```python
+# setup.py
+from setuptools import setup, find_packages
+
+with open('README.md', 'r') as f:
+    long_description = f.read()
+
+setup(
+    # Package Metadata
+    name='demo',            # Package name (e.g. numpy) *
+    version='1.0',          # Version number *
+    author="thewwu",        # Author name
+    author_email="",        # Author email
+    license="",             # Package license (For open-source / commercial use)
+    description="Demo package for project setup",           # 1-sentence summary
+    long_description=long_description,                      # Detailed summary like README
+    long_description_content_type="text/markdown",          # Format of long summary 
+    url="https://github.com/thewwu/python_project_setup",   # URL
+
+    # Package Discovery
+    packages=find_packages(),   # Auto-discover required packages
+    package_dir={'': 'src'},    # Mapping package names to directories *
+
+    # Dependency Management
+    python_requires=">=3.10",               # Python version requirement
+    setup_requires="setuptools>=68.2.2",    # Package required before running setup.py
+    install_requires=["numpy>=1.18.5"],     # Package required for this package *
+    
+    # Entry point
+    entry_points={                          # Entry point for console
+        'console_scripts': [
+            'demo_run = demo.utils:run'
+        ],
+    },
+)
+```
+
+#### 3.2.1. Development mode
+- To install the internal packages and enable development mode, run the below line in git bash/command line
+
+```bash
+pip install -e .
+# or
+python setup.py develop
+```
+
+| Before | After |
+| ----- | ----- |
+| ![before_setup](meta/setup_before.jpg) | ![after_setup](meta/setup_develop.jpg) |
+
+```bash
+# Now, the python interpret knows where to import demo package
+
+python import_internal_package.py
+# ------------------------------
+# Mean   of [1, 2, 4]: 2.33
+# Median of [1, 2, 4]: 2.00
+```
+
+#### 3.2.2. Other popular functions for setup.py
+
+- Install the internal package in **static way**, not editable until next installation
+  - Purpose: Freeze the codebase like `pip install demo`
+  - CMD: `python setup.py install`
+  - ![setup_install.jpg](meta/setup_install.jpg)
+
+- Create the source distribution (tar, zip) to share the package with others
+  - Purpose: Install the package by others with shared tar/zip files  
+  - CMD: `python setup.py sdist`
+  - After running the above command, the packaged library is available in `sdist/{name}-{version}.tar.gz`
+    - e.g. `sdist/demo-1.0.tar.gz`
+
+- Other functions in [Official website](https://setuptools.pypa.io/en/latest/userguide/)
 
 ## 3.3. `pyproject.toml`
--
+- Recent popular Python management system introduced in PEP518
+  - [PEP: Python Enhancement Proposal](https://peps.python.org/pep-0000/), design document providing info to Python community or introducing new feature 
+  - `pyproject.toml` is the **configuration file defining build system requirements** for Python projects
+    - Written in TOML (Tom's Obvious, Minimal Language) format
 
-## 4. Conclusion
-- 
+- Now, pyproject.toml supports various packaging building backend.
+  1. [Hatchling](https://hatch.pypa.io/latest/)
+  2. [Flit-core](https://flit.pypa.io/en/stable/)
+  3. [PDM-backend](https://pdm-project.org/latest/)
+  4. [Setuptools](https://setuptools.pypa.io/en/latest/)
+
+- Different build system **serves similar functions** of Python package management. 
+  - Each of them has its strength and drawbacks and with its setup requirement.
+  - In this guideline, **`setuptools` will be focused** on for the comparison with [Section 3.2](#32-setuptools-setuppy).
+
+#### 3.3.1. `pyproject.toml`
+- Define the build backend as `setuptools`
+- Include the package details like metadata, urls
+- [Reference](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/) 
+
+```
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "demo"
+version = "1.0"
+authors = [
+    {name = "thewwu"}
+]
+license = {text = ""}
+description = "Demo package for project setup"
+readme  = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy >= 1.18.5"
+]
+
+[project.urls]
+Repository = "https://github.com/thewwu/python_project_setup"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+demo_run = "demo.utils:run"
+```
+
+#### 3.3.2. Development mode
+- Similar to Section 3.2, execute below command to enable development mode
+  - CMD: `pip install -e .`
+
+| Before | After |
+| ----- | ----- |
+| ![before_setup](meta/setup_before.jpg) | ![pyproject.toml develop](meta/pyproject_toml_develop.jpg) |
+
+```bash
+# Now, the python interpret knows where to import demo package
+
+python import_internal_package.py
+# ------------------------------
+# Mean   of [1, 2, 4]: 2.33
+# Median of [1, 2, 4]: 2.00
+```
+
+#### 3.3.3. Packaging the library
+- Purpose: Packaging the distribution and share with others
+- CMD: `python -m build`
+- The packaged distribution will be placed in `dist/{name}-{version}.tar.gz` and `{name}-{version}-py3-none-any.whl`
+  - Example: `dist/demo-1.0.tar.gz`, `demo-1.0-py3-none-any.whl`
+
+- To install the package via the package distribution
+  - CMD: `pip install dist/{name}-{version}.tar.gz` or `pip install dist/{name}-{version}.whl`
+  - Example: `pip install dist/demo-1.0.tar.gz`

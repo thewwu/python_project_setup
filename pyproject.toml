@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "demo"
+version = "1.0"
+authors = [
+    {name = "thewwu"}
+]
+license = {text = ""}
+description = "Demo package for project setup"
+readme  = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy >= 1.18.5"
+]
+
+[project.urls]
+Repository = "https://github.com/thewwu/python_project_setup"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+demo_run = "demo.utils:run"
