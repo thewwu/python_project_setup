@@ -1,5 +1,3 @@
-
-
 # python_project_setup
 
 - This repository is a simple guideline of Python project setup.
@@ -181,20 +179,32 @@ python import_internal_package.py
 # ------------------------------
 # Mean   of [1, 2, 4]: 2.33
 # Median of [1, 2, 4]: 2.00
+
+# Run console script
+demo_run
+# ------------------------------
+# Mean   of [1, 2, 4]: 2.33
+# Median of [1, 2, 4]: 2.00
 ```
 
 #### 3.2.2. Other popular functions for setup.py
 
 - Install the internal package in **static way**, not editable until next installation
   - Purpose: Freeze the codebase like `pip install demo`
-  - CMD: `python setup.py install`
+  - CMD: `python setup.py install` or `pip install .`
+  - Remark: A empty-content script `__init__.py` is required for the folder needed.
+    - e.g. `src/demo/__init__.py`
   - ![setup_install.jpg](meta/setup_install.jpg)
 
-- Create the source distribution (tar, zip) to share the package with others
-  - Purpose: Install the package by others with shared tar/zip files  
-  - CMD: `python setup.py sdist`
-  - After running the above command, the packaged library is available in `sdist/{name}-{version}.tar.gz`
-    - e.g. `sdist/demo-1.0.tar.gz`
+- Create the source distribution (tar, zip, whl) to share the package with others
+  - Purpose: Install the package by others with shared tar/zip/whl files
+  - CMD: `python setup.py sdist` or `python setup.py bdist_wheel`
+  - After running the above command, the packaged library is available in `sdist/{name}-{version}.tar.gz` or `dist/{name}-{version}-py3-none-any.whl`
+    - e.g. `sdist/demo-1.0.tar.gz`, `dist/demo-1.0-py3-none-any.whl`
+
+- To install the package via the package distribution
+  - CMD: `pip install sdist/{name}-{version}.tar.gz` or `pip install dist/{name}-{version}-py3-none-any.whl`
+  - Example: `pip install dist/demo-1.0.tar.gz`
 
 - Other functions in [Official website](https://setuptools.pypa.io/en/latest/userguide/)
 
@@ -263,14 +273,29 @@ python import_internal_package.py
 # ------------------------------
 # Mean   of [1, 2, 4]: 2.33
 # Median of [1, 2, 4]: 2.00
+
+# Run console script
+demo_run
+# ------------------------------
+# Mean   of [1, 2, 4]: 2.33
+# Median of [1, 2, 4]: 2.00
 ```
 
-#### 3.3.3. Packaging the library
-- Purpose: Packaging the distribution and share with others
-- CMD: `python -m build`
-- The packaged distribution will be placed in `dist/{name}-{version}.tar.gz` and `{name}-{version}-py3-none-any.whl`
-  - Example: `dist/demo-1.0.tar.gz`, `demo-1.0-py3-none-any.whl`
+#### 3.3.3. Other functions
+- Same as [Section 3.2.](#322-other-popular-functions-for-setuppy)
+
+- Install the internal package in **static way**, not editable until next installation
+  - Purpose: Freeze the codebase like `pip install demo`
+  - CMD: `python setup.py install` or `pip install .`
+  - Remark: A empty-content script `__init__.py` is required for the folder needed.
+    - e.g. `src/demo/__init__.py`
+
+- Create the source distribution (tar, zip, whl) to share the package with others
+  - Purpose: Install the package by others with shared tar/zip/whl files
+  - CMD: `python -m build`
+  - After running the above command, the packaged library is available in `dist/{name}-{version}.tar.gz` or `dist/{name}-{version}-py3-none-any.whl`
+    - e.g. `dist/demo-1.0.tar.gz`, `dist/demo-1.0-py3-none-any.whl`
 
 - To install the package via the package distribution
-  - CMD: `pip install dist/{name}-{version}.tar.gz` or `pip install dist/{name}-{version}.whl`
+  - CMD: `pip install dist/{name}-{version}.tar.gz` or `pip install dist/{name}-{version}-py3-none-any.whl`
   - Example: `pip install dist/demo-1.0.tar.gz`
