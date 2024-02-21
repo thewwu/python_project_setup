@@ -16,7 +16,7 @@ setup(
     url="https://github.com/thewwu/python_project_setup",   # URL
 
     # Package Discovery
-    packages=find_packages(),   # Auto-discover required packages
+    packages=["demo"],          # Required package or find_packages() for auto-detection
     package_dir={'': 'src'},    # Mapping package names to directories
 
     # Dependency Management

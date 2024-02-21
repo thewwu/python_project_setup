@@ -142,7 +142,7 @@ setup(
     url="https://github.com/thewwu/python_project_setup",   # URL
 
     # Package Discovery
-    packages=find_packages(),   # Auto-discover required packages
+    packages=["demo"],          # Required package or find_packages() for auto-detection
     package_dir={'': 'src'},    # Mapping package names to directories *
 
     # Dependency Management
@@ -199,11 +199,11 @@ demo_run
 - Create the source distribution (tar, zip, whl) to share the package with others
   - Purpose: Install the package by others with shared tar/zip/whl files
   - CMD: `python setup.py sdist` or `python setup.py bdist_wheel`
-  - After running the above command, the packaged library is available in `sdist/{name}-{version}.tar.gz` or `dist/{name}-{version}-py3-none-any.whl`
-    - e.g. `sdist/demo-1.0.tar.gz`, `dist/demo-1.0-py3-none-any.whl`
+  - After running the above command, the packaged library is available in `dist/{name}-{version}.tar.gz` or `dist/{name}-{version}-py3-none-any.whl`
+    - e.g. `dist/demo-1.0.tar.gz`, `dist/demo-1.0-py3-none-any.whl`
 
 - To install the package via the package distribution
-  - CMD: `pip install sdist/{name}-{version}.tar.gz` or `pip install dist/{name}-{version}-py3-none-any.whl`
+  - CMD: `pip install dist/{name}-{version}.tar.gz` or `pip install dist/{name}-{version}-py3-none-any.whl`
   - Example: `pip install dist/demo-1.0.tar.gz`
 
 - Other functions in [Official website](https://setuptools.pypa.io/en/latest/userguide/)
@@ -219,6 +219,16 @@ demo_run
   2. [Flit-core](https://flit.pypa.io/en/stable/)
   3. [PDM-backend](https://pdm-project.org/latest/)
   4. [Setuptools](https://setuptools.pypa.io/en/latest/)
+
+
+| Feature/Backend    | setuptools                                                         | flit-core                                           | pdm-backend                                           | hatchling                                      |
+|--------------------|--------------------------------------------------------------------|------------------------------------------------------|------------------------------------------------------|------------------------------------------------|
+| **Description**    | The original build system for Python.                              | A simple build system for pure Python packages.      | Backend part of PDM, a modern Python package manager.| A fast and extensible build backend.           |
+| **Configuration**  | `setup.py` or increasingly `pyproject.toml` (static configuration).| `pyproject.toml` with PEP 621.                       | `pyproject.toml` with PEP 621.                       | `pyproject.toml` with PEP 621.                 |
+| **Binary Extensions**| Supports building C extensions.                               | For pure Python only.                           | For pure Python only.                           | For pure Python only.                      |
+| **Format**         | Builds `egg-info`, wheels, and sdists.                            | Builds wheels and sdists.                           | Builds wheels and sdists.                           | Builds wheels and sdists.                      |
+| **Pros**           | - Mature and widely adopted.<br>- Highly customizable.              | - Simple and straightforward.<br>- Quick to set up. | - Part of PDM, offering modern package management.<br>- Local `__pypackages__` support. | - Fast builds.<br>- Plugin extensibility.<br>- Emphasizes modern tooling and workflows. |
+| **Cons**           | - Can be complex and verbose.<br>- Transitioning to Toml-based configuration.| - No support for binary extensions.<br>- Fewer features and customization options. | - Relatively new, may not be as widely adopted.   | - Newer, less tested in diverse environments.  |
 
 - Different build system **serves similar functions** of Python package management. 
   - Each of them has its strength and drawbacks and with its setup requirement.
@@ -282,11 +292,11 @@ demo_run
 ```
 
 #### 3.3.3. Other functions
-- Same as [Section 3.2.](#322-other-popular-functions-for-setuppy)
+- Same as [Section 3.2.2](#322-other-popular-functions-for-setuppy)
 
 - Install the internal package in **static way**, not editable until next installation
   - Purpose: Freeze the codebase like `pip install demo`
-  - CMD: `python setup.py install` or `pip install .`
+  - CMD: `pip install .`
   - Remark: A empty-content script `__init__.py` is required for the folder needed.
     - e.g. `src/demo/__init__.py`
 
